@@ -45,3 +45,10 @@ example
 
 # local tooling
 graphify-out/
+
+# editor and assistant config
+.vscode/
+.claude/
+AGENTS.md
+.idea/
+.DS_Store
