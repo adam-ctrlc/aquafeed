@@ -36,7 +36,8 @@ jobs:
         run: npx expo prebuild --platform android --no-install
       - name: Build release APK
         working-directory: android
-        run: ./gradlew assembleRelease --no-daemon
+        # Phone processors only (64- and 32-bit ARM); leaving out the emulator builds halves the APK.
+        run: ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a,armeabi-v7a
       - name: Read app version
         id: app
         run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"

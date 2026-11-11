@@ -71,6 +71,7 @@ Things to know:
 - Updates can change screens, text and logic. Adding a library with native code, or changing the app version, needs a new build.
 - The update is built by the workflow, so it needs the same settings as your build. Add your `EXPO_PUBLIC_*` values as repository secrets; without them the update runs in demo mode.
 - To host updates somewhere else, set `UPDATES_URL` when building the app.
+- GitHub Pages cannot send the response header the update library normally requires, so `patches/` contains a small patch to `expo-updates` (applied automatically on `npm install`) that accepts updates without it. Android only.
 
 ## Scripts
 
