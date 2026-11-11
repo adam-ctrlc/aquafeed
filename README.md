@@ -58,16 +58,19 @@ Google sign-in, push alerts and the photo picker use native code, so they need a
 
 ## Live updates
 
-Updates are required and automatic: when a new version is published, the installed app shows an "Updating" screen with download progress and then restarts into it by itself. Nobody has to reinstall. This uses EAS Update.
+Updates are required and automatic: when a new version is published, the installed app shows an "Updating" screen with download progress and then restarts into it by itself. Nobody has to reinstall.
 
-```sh
-npx eas-cli@latest login
-npx eas-cli@latest init                 # once; put the project ID in .env as EAS_PROJECT_ID
-npx eas-cli@latest build --profile preview --platform android   # install this build once
-npx eas-cli@latest update --channel preview --message "What changed"   # every update after that
-```
+Updates are hosted on GitHub Pages, with no extra service or account:
 
-Updates can change screens, text and logic. Adding a library with native code, or changing the app version, needs a new build.
+1. Build and install the Android app once (`npx expo run:android --variant release`).
+2. Push to `main`. The **Publish app update** workflow exports the app and publishes it to Pages.
+3. Installed apps pick it up the next time they open.
+
+Things to know:
+
+- Updates can change screens, text and logic. Adding a library with native code, or changing the app version, needs a new build.
+- The update is built by the workflow, so it needs the same settings as your build. Add your `EXPO_PUBLIC_*` values as repository secrets; without them the update runs in demo mode.
+- To host updates somewhere else, set `UPDATES_URL` when building the app.
 
 ## Scripts
 

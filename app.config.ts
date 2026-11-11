@@ -5,11 +5,17 @@ import type { ConfigContext, ExpoConfig } from 'expo/config';
 const iosUrlScheme = process.env.GOOGLE_IOS_URL_SCHEME;
 const googleServicesFile = process.env.GOOGLE_SERVICES_JSON ?? './google-services.json';
 
+const version = '1.0.0';
+// Where installed apps look for updates. Override with UPDATES_URL to host them elsewhere.
+const updatesUrl =
+  process.env.UPDATES_URL ??
+  `https://adam-ctrlc.github.io/aquafeed/updates/android/${version}/manifest.json`;
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'AquaFeed',
   slug: 'aquafeed',
-  version: '1.0.0',
+  version,
   orientation: 'portrait',
   icon: './assets/images/icon.png',
   scheme: 'aquafeed',
@@ -63,11 +69,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     typedRoutes: true,
     reactCompiler: true,
   },
-  // Live updates (EAS Update). An update only reaches builds with the same app version.
+  // Live updates, self-hosted on GitHub Pages (see .github/workflows/publish-update.yml).
+  // An update only reaches builds with the same app version.
   runtimeVersion: { policy: 'appVersion' },
-  ...(process.env.EAS_PROJECT_ID
-    ? { updates: { url: `https://u.expo.dev/${process.env.EAS_PROJECT_ID}`, checkAutomatically: 'ON_LOAD' as const } }
-    : {}),
+  updates: { url: updatesUrl, checkAutomatically: 'ON_LOAD', fallbackToCacheTimeout: 0 },
   extra: {
     eas: { projectId: process.env.EAS_PROJECT_ID },
   },
