@@ -56,6 +56,19 @@ With no configuration the app starts in **demo mode**. Tap "Try a demo account" 
 
 Google sign-in, push alerts and the photo picker use native code, so they need a development build (`npx expo run:android` or an EAS build) rather than Expo Go.
 
+## Live updates
+
+Updates are required and automatic: when a new version is published, the installed app shows an "Updating" screen with download progress and then restarts into it by itself. Nobody has to reinstall. This uses EAS Update.
+
+```sh
+npx eas-cli@latest login
+npx eas-cli@latest init                 # once; put the project ID in .env as EAS_PROJECT_ID
+npx eas-cli@latest build --profile preview --platform android   # install this build once
+npx eas-cli@latest update --channel preview --message "What changed"   # every update after that
+```
+
+Updates can change screens, text and logic. Adding a library with native code, or changing the app version, needs a new build.
+
 ## Scripts
 
 ```sh

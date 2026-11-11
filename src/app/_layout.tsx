@@ -14,6 +14,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { View } from 'react-native';
 
+import { AppUpdater } from '@/components/app-updater';
 import { SheetHost } from '@/components/sheet';
 import { themeVars, useTheme } from '@/lib/theme';
 import { useAuth, useIsAdmin } from '@/stores/auth';
@@ -66,6 +67,7 @@ export default function RootLayout() {
           <Stack.Screen name="(auth)" />
         </Stack.Protected>
       </Stack>
+      <AppUpdater />
       <SheetHost />
     </View>
   );

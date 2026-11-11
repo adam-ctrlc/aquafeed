@@ -12,6 +12,7 @@ import {
   Shell,
   LogOut,
   Palette,
+  RefreshCw,
   Router,
   ShieldCheck,
   UserRound,
@@ -26,6 +27,7 @@ import {
   CalibrationValuesCard,
   ThresholdsCard,
 } from '@/components/admin-tools';
+import { checkForUpdateNow } from '@/components/app-updater';
 import { AppearanceOptions } from '@/components/appearance';
 import { BottomSheet } from '@/components/sheet';
 import { Text } from '@/components/text';
@@ -132,6 +134,15 @@ export default function SettingsScreen() {
           </Text>
         </View>
       </Pressable>
+      <View className="overflow-hidden rounded-xl bg-surface">
+        <LinkRow
+          icon={RefreshCw}
+          title="Check for updates"
+          body="New versions download and install by themselves"
+          onPress={checkForUpdateNow}
+          last
+        />
+      </View>
       <Text className="text-center text-[11px] text-faint">AquaFeed v1.0.0</Text>
     </Screen>
   );

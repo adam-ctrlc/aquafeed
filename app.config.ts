@@ -63,6 +63,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     typedRoutes: true,
     reactCompiler: true,
   },
+  // Live updates (EAS Update). An update only reaches builds with the same app version.
+  runtimeVersion: { policy: 'appVersion' },
+  ...(process.env.EAS_PROJECT_ID
+    ? { updates: { url: `https://u.expo.dev/${process.env.EAS_PROJECT_ID}`, checkAutomatically: 'ON_LOAD' as const } }
+    : {}),
   extra: {
     eas: { projectId: process.env.EAS_PROJECT_ID },
   },
