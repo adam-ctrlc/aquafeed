@@ -10,6 +10,7 @@ import { useTheme } from '@/lib/theme';
 import { statusLabel } from '@/lib/status';
 
 import { ConnectionBanner } from './connection-banner';
+import { ModeTag } from './mode-tag';
 
 export const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(' ');
 
@@ -54,12 +55,15 @@ export function Screen({
           </Pressable>
         ) : null}
         {title ? (
-          <View className="flex-row items-end justify-between px-1 pt-1">
+          <View className="flex-row items-start justify-between gap-3 px-1 pt-1">
             <View className="flex-1 gap-1.5">
               <Text className="font-display-bold text-[22px] tracking-tight text-fg">{title}</Text>
               {subtitle ? <Text className="text-xs text-muted">{subtitle}</Text> : null}
             </View>
-            {right}
+            <View className="flex-row flex-wrap items-center justify-end gap-1.5">
+              <ModeTag />
+              {right}
+            </View>
           </View>
         ) : null}
         {children}
@@ -377,7 +381,7 @@ const statusStyles: Record<Status, { bg: string; text: string }> = {
 export function StatusBadge({ status, label }: { status: Status; label?: string }) {
   const s = statusStyles[status];
   return (
-    <View className={cx('self-start rounded px-1.5 py-0.5', s.bg)}>
+    <View className={cx('self-start rounded-full px-2 py-1', s.bg)}>
       <Text className={cx('text-[11px] font-semibold', s.text)}>{label ?? statusLabel[status]}</Text>
     </View>
   );
