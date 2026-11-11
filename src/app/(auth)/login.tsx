@@ -49,7 +49,7 @@ export default function LoginScreen() {
     <SafeAreaView className="flex-1 bg-canvas">
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        behavior={Platform.OS === 'web' ? undefined : 'padding'}>
         <ScrollView
           contentContainerClassName="flex-grow justify-center gap-5 px-5 py-8"
           keyboardShouldPersistTaps="handled">

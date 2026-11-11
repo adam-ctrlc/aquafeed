@@ -64,7 +64,7 @@ export function BottomSheet({
         <Pressable style={{ flex: 1 }} onPress={onClose} accessibilityLabel="Dismiss" />
       </Animated.View>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === 'web' ? undefined : 'padding'}
         pointerEvents="box-none"
         style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}>
         <Animated.View

@@ -1,6 +1,6 @@
 import { Check, ChevronLeft, ChevronRight, type LucideIcon } from 'lucide-react-native';
 import { useEffect, useState, type ReactNode } from 'react';
-import { ActivityIndicator, Animated, Platform, Pressable, ScrollView, TextInput, View, type PressableProps, type ScrollViewProps, type TextInputProps } from 'react-native';
+import { ActivityIndicator, Animated, KeyboardAvoidingView, Platform, Pressable, ScrollView, TextInput, View, type PressableProps, type ScrollViewProps, type TextInputProps } from 'react-native';
 
 import { Text } from '@/components/text';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -39,10 +39,13 @@ export function Screen({
   return (
     <View className="flex-1 bg-canvas" style={{ paddingTop: title ? insets.top : 0 }}>
       <ConnectionBanner />
+      {/* Android draws edge to edge, so the page has to make room for the keyboard itself. */}
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'web' ? undefined : 'padding'}>
       <ScrollView
         className={cx('flex-1', className)}
         contentContainerClassName="gap-3 px-3 pb-8 pt-3"
         keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive"
         {...props}>
         {onBack ? (
           <Pressable
@@ -68,6 +71,7 @@ export function Screen({
         ) : null}
         {children}
       </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 }
@@ -226,6 +230,35 @@ export function Button({
   );
 }
 
+/**
+ * Keeps typed text valid for the kind of field, so a number field can only hold a number.
+ * (Phones show the right keyboard, but pasting and desktop browsers can still enter anything.)
+ */
+function clean(text: string, kind: TextInputProps['keyboardType']): string {
+  switch (kind) {
+    case 'number-pad':
+      return text.replace(/\D/g, '');
+    case 'decimal-pad':
+    case 'numeric':
+    case 'numbers-and-punctuation': {
+      const negative = kind === 'numbers-and-punctuation' && text.trim().startsWith('-');
+      const [whole, ...rest] = text.replace(/,/g, '.').replace(/[^\d.]/g, '').split('.');
+      return (negative ? '-' : '') + whole + (rest.length ? '.' + rest.join('') : '');
+    }
+    case 'email-address':
+      return text.replace(/\s/g, '');
+    default:
+      return text;
+  }
+}
+
+const inputModeFor: Partial<Record<NonNullable<TextInputProps['keyboardType']>, TextInputProps['inputMode']>> = {
+  'number-pad': 'numeric',
+  'decimal-pad': 'decimal',
+  numeric: 'decimal',
+  'email-address': 'email',
+};
+
 export function TextField({
   label,
   error,
@@ -250,15 +283,22 @@ export function TextField({
       <Text className="text-xs font-medium text-fg2">{label}</Text>
       <View
         className={cx(
-          'h-10 flex-row items-center gap-2 rounded-lg border bg-surface px-3',
+          'h-11 flex-row items-center gap-2 rounded-lg border bg-surface px-3',
           error ? 'border-crit' : 'border-line',
         )}>
         {icon ? <Icon as={icon} tone="faint" size={16} /> : null}
         <TextInput
           placeholderTextColor={colors.faint}
-          className="h-full flex-1 font-normal text-sm text-fg"
-          style={Platform.OS === 'web' ? ({ outlineStyle: 'none' } as object) : undefined}
+          className="flex-1 self-stretch font-normal text-sm text-fg"
+          // Android adds its own vertical padding and font padding, which clipped the text.
+          style={
+            Platform.OS === 'web'
+              ? ({ outlineStyle: 'none' } as object)
+              : { paddingVertical: 0, includeFontPadding: false, textAlignVertical: 'center' }
+          }
+          inputMode={inputModeFor[props.keyboardType ?? 'default']}
           {...props}
+          onChangeText={(t) => props.onChangeText?.(clean(t, props.keyboardType))}
         />
         {right}
       </View>

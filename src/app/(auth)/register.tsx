@@ -44,7 +44,7 @@ export default function RegisterScreen() {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'web' ? undefined : 'padding'}>
       <ScrollView contentContainerClassName="gap-4 p-6" keyboardShouldPersistTaps="handled">
         <View className="gap-1.5">
           <Text className="font-display-bold text-[24px] tracking-tight text-fg">Create your account</Text>

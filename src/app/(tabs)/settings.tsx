@@ -325,7 +325,7 @@ function DeviceCard() {
           autoCapitalize="none"
           autoCorrect={false}
           value={input}
-          onChangeText={setInput}
+          onChangeText={(t) => setInput(t.replace(/[^\w-]/g, '').toLowerCase())}
           placeholder="aquafeed-a1b2c3"
         />
         <Button title="Connect" loading={busy} disabled={!/^[\w-]{4,}$/.test(input.trim())} onPress={pair} />

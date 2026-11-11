@@ -1,5 +1,5 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useState } from 'react';
+import { createElement, useState } from 'react';
 import { Platform, Pressable, Switch, View } from 'react-native';
 
 import { Text } from '@/components/text';
@@ -77,7 +77,6 @@ function ScheduleForm({
     d.setHours(h, m, 0, 0);
     return d;
   });
-  const [webTime, setWebTime] = useState(initial);
   const [grams, setGrams] = useState(existing ? existing.grams.toFixed(1) : '1.0');
   const [enabled, setEnabled] = useState(existing?.enabled ?? true);
   const [showAndroidPicker, setShowAndroidPicker] = useState(false);
@@ -146,20 +145,33 @@ function ScheduleForm({
             onChange={(_, d) => d && setTime(d)}
           />
         ) : Platform.OS === 'web' ? (
-          <TextField
-            label="24-hour (HH:mm)"
-            value={webTime}
-            onChangeText={(v) => {
-              setWebTime(v);
-              if (/^([01]\d|2[0-3]):[0-5]\d$/.test(v)) {
-                const { h, m } = parseHHmm(v);
+          // The browser's own time picker, so only a real time can be entered.
+          <View className="gap-1">
+            {createElement('input', {
+              type: 'time',
+              value: toHHmm(time),
+              'aria-label': 'Feeding time',
+              onChange: (e: { target: { value: string } }) => {
+                if (!/^\d\d:\d\d$/.test(e.target.value)) return;
+                const { h, m } = parseHHmm(e.target.value);
                 const d = new Date(time);
                 d.setHours(h, m, 0, 0);
                 setTime(d);
-              }
-            }}
-            hint={formatTime12(toHHmm(time))}
-          />
+              },
+              style: {
+                height: 44,
+                padding: '0 12px',
+                borderRadius: 8,
+                border: `1px solid ${colors.line}`,
+                backgroundColor: colors.surface,
+                color: colors.fg,
+                colorScheme: scheme,
+                fontFamily: 'Inter_500Medium',
+                fontSize: 18,
+                outline: 'none',
+              },
+            })}
+          </View>
         ) : (
           <>
             <Pressable
